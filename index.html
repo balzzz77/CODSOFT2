@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LaunchPoint — Premium Landing Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f5f2ee;
+      --cream: #ede9e3;
+      --gold: #c9a84c;
+      --gold-light: #e8d5a0;
+      --gold-dim: rgba(201,168,76,0.15);
+      --muted: #7a7570;
+      --line: rgba(13,13,13,0.1);
+      --white: #ffffff;
+      --dark-panel: #111010;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── CURSOR ─── */
+    * { cursor: none; }
+    #cursor {
+      position: fixed; width: 10px; height: 10px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+      mix-blend-mode: multiply;
+    }
+    #cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1px solid var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.25s ease, width 0.3s, height 0.3s, opacity 0.3s;
+      opacity: 0.6;
+    }
+    body:has(a:hover) #cursor { width: 16px; height: 16px; background: var(--ink); }
+    body:has(a:hover) #cursor-ring { width: 50px; height: 50px; opacity: 0.3; }
+
+    /* ─── UTILITY ─── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    @media(max-width:768px){ .container { padding: 0 24px; } }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 16px;
+    }
+    .eyebrow.light { color: var(--gold-light); }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px;
+      pointer-events: none; z-index: 1; opacity: 0.4;
+    }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 20px 0;
+      transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+    }
+    .site-header.scrolled {
+      background: rgba(245,242,238,0.88);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 var(--line);
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .brand-mark {
+      width: 38px; height: 38px;
+      border: 1px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif); font-size: 14px; font-weight: 600;
+      color: var(--gold); letter-spacing: 0.05em;
+    }
+    .brand-name {
+      font-family: var(--serif); font-size: 18px; font-weight: 600;
+      color: var(--ink); line-height: 1.1;
+    }
+    .brand-tagline { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+
+    .nav-links { display: flex; align-items: center; gap: 36px; }
+    .nav-links a {
+      text-decoration: none; font-size: 13px; font-weight: 400;
+      color: var(--muted); letter-spacing: 0.04em;
+      position: relative; transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 100%;
+      height: 1px; background: var(--gold); transition: right 0.3s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { right: 0; }
+    .nav-cta {
+      padding: 9px 22px;
+      border: 1px solid var(--ink); color: var(--ink) !important;
+      font-size: 12px !important; letter-spacing: 0.12em !important;
+      text-transform: uppercase; transition: background 0.2s, color 0.2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--ink) !important; color: var(--paper) !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 140px 0 100px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -20%; right: -10%;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    @media(max-width:900px){
+      .hero-inner { grid-template-columns: 1fr; gap: 60px; }
+    }
+
+    .hero-label {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+    }
+    .hero-label::before {
+      content: ''; display: block;
+      width: 32px; height: 1px; background: var(--gold);
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(42px, 5.5vw, 72px);
+      font-weight: 300; line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--ink); margin-bottom: 24px;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold); }
+
+    .hero-desc {
+      font-size: 16px; line-height: 1.75;
+      color: var(--muted); max-width: 420px; margin-bottom: 40px;
+    }
+
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 56px; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px;
+      background: var(--ink); color: var(--paper);
+      text-decoration: none; font-size: 13px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 400; transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold); color: var(--ink); }
+    .btn-primary svg { transition: transform 0.2s; }
+    .btn-primary:hover svg { transform: translateX(4px); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px;
+      border: 1px solid var(--line); color: var(--muted);
+      text-decoration: none; font-size: 13px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 400; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+    .hero-metrics {
+      display: flex; gap: 40px; padding-top: 32px;
+      border-top: 1px solid var(--line);
+    }
+    .hero-metrics div { display: flex; flex-direction: column; gap: 4px; }
+    .hero-metrics strong {
+      font-family: var(--serif); font-size: 32px; font-weight: 300; color: var(--ink);
+    }
+    .hero-metrics span { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+
+    /* ─── HERO VISUAL ─── */
+    .hero-visual { position: relative; }
+    .hero-visual-wrap {
+      position: relative;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 0;
+      box-shadow: 24px 24px 0 var(--cream), 25px 25px 0 var(--line);
+      overflow: hidden;
+    }
+    .visual-topbar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 20px; background: var(--ink);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-r { background: #e06060; }
+    .dot-y { background: var(--gold); }
+    .dot-g { background: #7ab87a; }
+    .visual-url {
+      flex: 1; background: rgba(255,255,255,0.06);
+      border-radius: 2px; padding: 5px 12px;
+      font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.4);
+    }
+    .visual-body { padding: 24px; }
+    .visual-hero-block {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--paper) 100%);
+      height: 90px; margin-bottom: 20px;
+      display: flex; align-items: center; padding: 16px 20px; gap: 12px;
+      border: 1px solid var(--line);
+    }
+    .vhb-text { flex: 1; }
+    .vhb-line { height: 8px; border-radius: 2px; background: var(--gold-dim); margin-bottom: 6px; }
+    .vhb-line.short { width: 55%; height: 6px; }
+    .vhb-btn { width: 60px; height: 26px; background: var(--ink); border-radius: 1px; }
+    .visual-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .visual-card-mini {
+      background: var(--cream); border: 1px solid var(--line);
+      padding: 14px 12px; border-radius: 1px;
+    }
+    .vcm-num { font-family: var(--mono); font-size: 10px; color: var(--gold); margin-bottom: 8px; }
+    .vcm-bar { height: 6px; background: var(--gold-dim); border-radius: 2px; margin-bottom: 4px; }
+    .vcm-bar.s { width: 70%; }
+    .visual-badge {
+      position: absolute; bottom: -18px; right: -18px;
+      background: var(--ink); color: var(--gold);
+      padding: 14px 20px; font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border: 1px solid rgba(201,168,76,0.3);
+    }
+    .visual-badge strong { display: block; font-size: 22px; font-family: var(--serif); font-weight: 300; color: var(--white); }
+
+    /* ─── MARQUEE ─── */
+    .marquee-strip {
+      overflow: hidden; background: var(--ink);
+      padding: 18px 0; border-top: 1px solid rgba(201,168,76,0.2);
+    }
+    .marquee-track {
+      display: flex; gap: 48px; width: max-content;
+      animation: marquee 22s linear infinite;
+    }
+    .marquee-track span {
+      font-family: var(--mono); font-size: 11px;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.15em;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .marquee-track span.accent { color: var(--gold); }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ─── FEATURES ─── */
+    #features { padding: 120px 0; background: var(--white); }
+    .section-intro { margin-bottom: 80px; }
+    .section-intro h2 {
+      font-family: var(--serif); font-size: clamp(34px, 4vw, 54px);
+      font-weight: 300; line-height: 1.1; margin-bottom: 20px;
+    }
+    .section-intro p { color: var(--muted); max-width: 480px; font-size: 15px; line-height: 1.8; }
+    .section-intro .intro-line {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 60px; flex-wrap: wrap;
+    }
+
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 2px; background: var(--line);
+      border: 1px solid var(--line);
+    }
+    @media(max-width: 700px){ .feature-grid { grid-template-columns: 1fr; } }
+
+    .feature-card {
+      background: var(--white); padding: 48px 40px;
+      position: relative; overflow: hidden;
+      transition: background 0.3s;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--paper);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .feature-card:hover::before { transform: scaleX(1); }
+    .feature-card > * { position: relative; z-index: 1; }
+
+    .feature-num {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--gold); letter-spacing: 0.15em;
+      margin-bottom: 24px; display: block;
+    }
+    .feature-card h3 {
+      font-family: var(--serif); font-size: 24px; font-weight: 400;
+      margin-bottom: 14px; color: var(--ink); line-height: 1.2;
+    }
+    .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.8; }
+    .feature-arrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 24px; font-size: 12px; color: var(--gold);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      font-family: var(--mono); opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .feature-card:hover .feature-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ─── PROCESS ─── */
+    #process { padding: 120px 0; background: var(--dark-panel); position: relative; overflow: hidden; }
+    #process::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%);
+    }
+    .process-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 80px; gap: 40px; flex-wrap: wrap;
+    }
+    #process h2 {
+      font-family: var(--serif); font-size: clamp(32px, 4vw, 52px);
+      font-weight: 300; line-height: 1.1; color: var(--white);
+      max-width: 480px;
+    }
+    #process h2 em { font-style: italic; color: var(--gold); }
+    .process-desc { color: rgba(255,255,255,0.4); font-size: 14px; max-width: 300px; line-height: 1.8; }
+
+    .process-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0; border: 1px solid rgba(255,255,255,0.07);
+    }
+    @media(max-width:700px){ .process-steps { grid-template-columns: 1fr; } }
+
+    .process-step {
+      padding: 48px 40px; border-right: 1px solid rgba(255,255,255,0.07);
+      position: relative; transition: background 0.3s;
+    }
+    .process-step:last-child { border-right: none; }
+    .process-step:hover { background: rgba(255,255,255,0.03); }
+    .step-num {
+      font-family: var(--mono); font-size: 56px; font-weight: 300;
+      color: rgba(201,168,76,0.12); line-height: 1;
+      position: absolute; top: 32px; right: 36px;
+    }
+    .step-bar {
+      width: 32px; height: 2px; background: var(--gold);
+      margin-bottom: 28px;
+    }
+    .process-step h3 {
+      font-family: var(--serif); font-size: 22px; font-weight: 400;
+      color: var(--white); margin-bottom: 14px;
+    }
+    .process-step p { font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.8; }
+
+    /* ─── ABOUT / STATS ─── */
+    #about { padding: 120px 0; background: var(--paper); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 100px; align-items: center;
+    }
+    @media(max-width:900px){ .about-grid { grid-template-columns: 1fr; gap: 60px; } }
+
+    .about-copy h2 {
+      font-family: var(--serif); font-size: clamp(34px, 4vw, 52px);
+      font-weight: 300; line-height: 1.1; margin-bottom: 20px;
+    }
+    .about-copy h2 em { font-style: italic; color: var(--gold); }
+    .about-copy p { color: var(--muted); font-size: 15px; line-height: 1.8; margin-bottom: 32px; }
+    .about-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .about-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 14px; color: var(--muted); line-height: 1.6;
+    }
+    .about-list li::before {
+      content: ''; display: block; flex-shrink: 0;
+      width: 20px; height: 1px; background: var(--gold); margin-top: 11px;
+    }
+
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px; background: var(--line);
+    }
+    .stat-box {
+      background: var(--white); padding: 44px 36px;
+      transition: background 0.3s;
+    }
+    .stat-box:hover { background: var(--cream); }
+    .stat-box strong {
+      display: block; font-family: var(--serif);
+      font-size: 52px; font-weight: 300; line-height: 1;
+      color: var(--ink); margin-bottom: 8px;
+    }
+    .stat-box span { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+    .stat-accent strong { color: var(--gold); }
+
+    /* ─── CONTACT / CTA ─── */
+    #contact { padding: 0; background: var(--ink); }
+    .cta-wrap {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 60px; align-items: center;
+      padding: 100px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    @media(max-width:800px){ .cta-wrap { grid-template-columns: 1fr; } }
+    .cta-wrap h2 {
+      font-family: var(--serif); font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300; color: var(--white); line-height: 1.08;
+    }
+    .cta-wrap h2 em { font-style: italic; color: var(--gold); }
+    .cta-wrap p { color: rgba(255,255,255,0.4); font-size: 15px; line-height: 1.8; max-width: 520px; margin-top: 16px; }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 18px 40px; background: var(--gold); color: var(--ink);
+      text-decoration: none; font-size: 12px;
+      letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+      font-weight: 500; transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-gold:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    /* ─── FOOTER ─── */
+    .site-footer { background: var(--ink); padding: 48px 0; }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .footer-brand {
+      font-family: var(--serif); font-size: 20px; font-weight: 300;
+      color: rgba(255,255,255,0.4);
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 0.04em; margin-top: 4px; }
+    .footer-nav { display: flex; gap: 28px; }
+    .footer-nav a {
+      text-decoration: none; font-size: 12px;
+      color: rgba(255,255,255,0.3); letter-spacing: 0.06em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .footer-nav a:hover { color: var(--gold); }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.35s; }
+    .reveal-delay-4 { transition-delay: 0.5s; }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ─── HEADER ─── -->
+<header class="site-header" id="header">
+  <div class="container header-inner">
+    <a class="brand" href="#">
+      <div class="brand-mark">LP</div>
+      <div>
+        <p class="brand-name">LaunchPoint</p>
+        <p class="brand-tagline">Refined landing experiences</p>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#process">Process</a>
+      <a href="#about">About</a>
+      <a class="nav-cta" href="#contact">Get started</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="hero-label reveal">
+        <span class="eyebrow" style="margin:0">Crafted for first impressions</span>
+      </div>
+      <h1 class="reveal reveal-delay-1">
+        Build pages that feel <em>truly</em> premium
+      </h1>
+      <p class="hero-desc reveal reveal-delay-2">
+        LaunchPoint is a refined HTML &amp; CSS template for learners who want their first project to look genuinely professional — not just functional.
+      </p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a class="btn-primary" href="#features">
+          Start building
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </a>
+        <a class="btn-ghost" href="#process">View process</a>
+      </div>
+      <div class="hero-metrics reveal reveal-delay-4">
+        <div><strong>4.9</strong><span>template rating</span></div>
+        <div><strong>80+</strong><span>layout examples</span></div>
+        <div><strong>100%</strong><span>responsive</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal reveal-delay-2">
+      <div class="hero-visual-wrap">
+        <div class="visual-topbar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+          <div class="visual-url">launchpoint.design/preview</div>
+        </div>
+        <div class="visual-body">
+          <div class="visual-hero-block">
+            <div class="vhb-text">
+              <div class="vhb-line"></div>
+              <div class="vhb-line short"></div>
+            </div>
+            <div class="vhb-btn"></div>
+          </div>
+          <div class="visual-cards">
+            <div class="visual-card-mini">
+              <div class="vcm-num">01</div>
+              <div class="vcm-bar"></div>
+              <div class="vcm-bar s"></div>
+            </div>
+            <div class="visual-card-mini">
+              <div class="vcm-num">02</div>
+              <div class="vcm-bar"></div>
+              <div class="vcm-bar s"></div>
+            </div>
+            <div class="visual-card-mini">
+              <div class="vcm-num">03</div>
+              <div class="vcm-bar"></div>
+              <div class="vcm-bar s"></div>
+            </div>
+          </div>
+        </div>
+        <div class="visual-badge">
+          <strong>82%</strong>
+          complete
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MARQUEE ─── -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span>Refined Typography</span><span class="accent">✦</span>
+    <span>Responsive Grid</span><span class="accent">✦</span>
+    <span>Premium Spacing</span><span class="accent">✦</span>
+    <span>Clean Hierarchy</span><span class="accent">✦</span>
+    <span>Modern CSS</span><span class="accent">✦</span>
+    <span>Polished UI</span><span class="accent">✦</span>
+    <span>Refined Typography</span><span class="accent">✦</span>
+    <span>Responsive Grid</span><span class="accent">✦</span>
+    <span>Premium Spacing</span><span class="accent">✦</span>
+    <span>Clean Hierarchy</span><span class="accent">✦</span>
+    <span>Modern CSS</span><span class="accent">✦</span>
+    <span>Polished UI</span><span class="accent">✦</span>
+  </div>
+</div>
+
+<!-- ─── FEATURES ─── -->
+<section id="features">
+  <div class="container" style="padding-top:120px; padding-bottom:120px;">
+    <div class="section-intro reveal">
+      <div class="intro-line">
+        <div>
+          <span class="eyebrow">What you'll learn</span>
+          <h2>Essential elements for a refined landing page</h2>
+        </div>
+        <p>Focus on strong structure, precise spacing, and polished visuals that make every section feel intentional and trustworthy.</p>
+      </div>
+    </div>
+    <div class="feature-grid reveal">
+      <article class="feature-card">
+        <span class="feature-num">01</span>
+        <h3>Hero &amp; Messaging</h3>
+        <p>Create a clear introduction with a powerful headline, supportive copy, and decisive calls to action that convert visitors.</p>
+        <span class="feature-arrow">Explore →</span>
+      </article>
+      <article class="feature-card">
+        <span class="feature-num">02</span>
+        <h3>Content Sections</h3>
+        <p>Design feature, process, and testimonial sections that balance rich information with generous visual breathing room.</p>
+        <span class="feature-arrow">Explore →</span>
+      </article>
+      <article class="feature-card">
+        <span class="feature-num">03</span>
+        <h3>Spacing System</h3>
+        <p>Use a disciplined system of padding, margins, and gaps so every section reads effortlessly on any screen size.</p>
+        <span class="feature-arrow">Explore →</span>
+      </article>
+      <article class="feature-card">
+        <span class="feature-num">04</span>
+        <h3>Footer &amp; Final CTA</h3>
+        <p>Close the page with a polished footer, accessible navigation, and a final invitation that turns visitors into leads.</p>
+        <span class="feature-arrow">Explore →</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROCESS ─── -->
+<section id="process">
+  <div class="container" style="padding-top:120px; padding-bottom:120px;">
+    <div class="process-header reveal">
+      <div>
+        <span class="eyebrow light">How it works</span>
+        <h2>A disciplined process for <em>polished</em> results</h2>
+      </div>
+      <p class="process-desc">Follow a step-by-step workflow that guides you from structure to pixel-perfect refinement.</p>
+    </div>
+    <div class="process-steps reveal">
+      <article class="process-step">
+        <div class="step-num">01</div>
+        <div class="step-bar"></div>
+        <h3>Plan your page</h3>
+        <p>Define the hero, key sections, and primary actions before writing a single line of CSS. Architecture first.</p>
+      </article>
+      <article class="process-step">
+        <div class="step-num">02</div>
+        <div class="step-bar"></div>
+        <h3>Style with precision</h3>
+        <p>Apply typography, color, spacing, and shape so every element reinforces a cohesive visual identity.</p>
+      </article>
+      <article class="process-step">
+        <div class="step-num">03</div>
+        <div class="step-bar"></div>
+        <h3>Review &amp; refine</h3>
+        <p>Test across viewports, audit visual balance, and polish margins until nothing jars the eye.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="container" style="padding-top:120px; padding-bottom:120px;">
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <span class="eyebrow">Why this template</span>
+        <h2>Designed to help beginners ship <em>beautifully</em></h2>
+        <p>LaunchPoint pairs practical HTML &amp; CSS structure with editorial-grade visual styling — so your page looks polished from day one, without overwhelming complexity.</p>
+        <ul class="about-list">
+          <li>Clean layout rules that prevent overlap and chaos</li>
+          <li>Readable serif/sans type pairing for strong hierarchy</li>
+          <li>Flexible structure that adapts to every screen</li>
+          <li>Gold accent system for consistent visual identity</li>
+        </ul>
+      </div>
+      <div class="stats-grid reveal reveal-delay-1">
+        <div class="stat-box">
+          <strong>6</strong>
+          <span>key sections</span>
+        </div>
+        <div class="stat-box stat-accent">
+          <strong>4.9</strong>
+          <span>average rating</span>
+        </div>
+        <div class="stat-box">
+          <strong>120+</strong>
+          <span>CSS lines</span>
+        </div>
+        <div class="stat-box">
+          <strong>Pro</strong>
+          <span>design-ready</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section id="contact">
+  <div class="container">
+    <div class="cta-wrap reveal">
+      <div>
+        <span class="eyebrow light">Ready to launch?</span>
+        <h2>Bring your landing page <em>to life</em></h2>
+        <p>Use this polished template as your foundation for a site that looks professional, clean, and yours.</p>
+      </div>
+      <a class="btn-gold" href="mailto:hello@launchpoint.com">
+        Contact us
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-brand">LaunchPoint</p>
+      <p class="footer-copy">© 2026 LaunchPoint. A premium template for beginner designers.</p>
+    </div>
+    <nav class="footer-nav">
+      <a href="#features">Features</a>
+      <a href="#process">Process</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  });
+
+  // Header scroll
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
